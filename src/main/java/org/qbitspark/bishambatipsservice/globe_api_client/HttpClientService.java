@@ -10,7 +10,6 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,11 +27,7 @@ public class HttpClientService {
     @Value("${app.external.timeout:60000}")
     private int timeout;
 
-    @Value("${api.sms-username:}")
-    private String defaultUsername;
 
-    @Value("${api.sms-password:}")
-    private String defaultPassword;
 
     // ================================
     // 1. BASIC HTTP METHODS
@@ -87,25 +82,25 @@ public class HttpClientService {
     }
 
     public <T, R> Mono<R> postWithBearer(String url, T body, String token, Class<R> responseType) {
-        Map<String, String> headers = mergeHeaders(
-                bearerHeaders(token),
-                Map.of("Content-Type", "application/json")
+        Map<String, String> headers = Map.of(
+                "Authorization", "Bearer " + token,
+                "Content-Type", "application/json"
         );
         return post(url, body, headers, responseType);
     }
 
     public <T, R> Mono<R> putWithBearer(String url, T body, String token, Class<R> responseType) {
-        Map<String, String> headers = mergeHeaders(
-                bearerHeaders(token),
-                Map.of("Content-Type", "application/json")
+        Map<String, String> headers = Map.of(
+                "Authorization", "Bearer " + token,
+                "Content-Type", "application/json"
         );
         return put(url, body, headers, responseType);
     }
 
     public <T, R> Mono<R> patchWithBearer(String url, T body, String token, Class<R> responseType) {
-        Map<String, String> headers = mergeHeaders(
-                bearerHeaders(token),
-                Map.of("Content-Type", "application/json")
+        Map<String, String> headers = Map.of(
+                "Authorization", "Bearer " + token,
+                "Content-Type", "application/json"
         );
         return patch(url, body, headers, responseType);
     }
@@ -118,16 +113,8 @@ public class HttpClientService {
     // 3. BASIC AUTHENTICATION
     // ================================
 
-    public <T> Mono<T> getWithBasicAuth(String url, Class<T> responseType) {
-        return getWithBasicAuth(url, defaultUsername, defaultPassword, responseType);
-    }
-
     public <T> Mono<T> getWithBasicAuth(String url, String username, String password, Class<T> responseType) {
         return get(url, basicAuthHeaders(username, password), responseType);
-    }
-
-    public <T, R> Mono<R> postWithBasicAuth(String url, T body, Class<R> responseType) {
-        return postWithBasicAuth(url, body, defaultUsername, defaultPassword, responseType);
     }
 
     public <T, R> Mono<R> postWithBasicAuth(String url, T body, String username, String password, Class<R> responseType) {
@@ -138,10 +125,6 @@ public class HttpClientService {
         return post(url, body, headers, responseType);
     }
 
-    public <T, R> Mono<R> putWithBasicAuth(String url, T body, Class<R> responseType) {
-        return putWithBasicAuth(url, body, defaultUsername, defaultPassword, responseType);
-    }
-
     public <T, R> Mono<R> putWithBasicAuth(String url, T body, String username, String password, Class<R> responseType) {
         Map<String, String> headers = mergeHeaders(
                 basicAuthHeaders(username, password),
@@ -150,20 +133,12 @@ public class HttpClientService {
         return put(url, body, headers, responseType);
     }
 
-    public <T, R> Mono<R> patchWithBasicAuth(String url, T body, Class<R> responseType) {
-        return patchWithBasicAuth(url, body, defaultUsername, defaultPassword, responseType);
-    }
-
     public <T, R> Mono<R> patchWithBasicAuth(String url, T body, String username, String password, Class<R> responseType) {
         Map<String, String> headers = mergeHeaders(
                 basicAuthHeaders(username, password),
                 Map.of("Content-Type", "application/json")
         );
         return patch(url, body, headers, responseType);
-    }
-
-    public <T> Mono<T> deleteWithBasicAuth(String url, Class<T> responseType) {
-        return deleteWithBasicAuth(url, defaultUsername, defaultPassword, responseType);
     }
 
     public <T> Mono<T> deleteWithBasicAuth(String url, String username, String password, Class<T> responseType) {
@@ -217,40 +192,20 @@ public class HttpClientService {
     }
 
     // Basic Auth - Sync
-    public <T> T getWithBasicAuthSync(String url, Class<T> responseType) {
-        return getWithBasicAuth(url, responseType).block();
-    }
-
     public <T> T getWithBasicAuthSync(String url, String username, String password, Class<T> responseType) {
         return getWithBasicAuth(url, username, password, responseType).block();
-    }
-
-    public <T, R> R postWithBasicAuthSync(String url, T body, Class<R> responseType) {
-        return postWithBasicAuth(url, body, responseType).block();
     }
 
     public <T, R> R postWithBasicAuthSync(String url, T body, String username, String password, Class<R> responseType) {
         return postWithBasicAuth(url, body, username, password, responseType).block();
     }
 
-    public <T, R> R putWithBasicAuthSync(String url, T body, Class<R> responseType) {
-        return putWithBasicAuth(url, body, responseType).block();
-    }
-
     public <T, R> R putWithBasicAuthSync(String url, T body, String username, String password, Class<R> responseType) {
         return putWithBasicAuth(url, body, username, password, responseType).block();
     }
 
-    public <T, R> R patchWithBasicAuthSync(String url, T body, Class<R> responseType) {
-        return patchWithBasicAuth(url, body, responseType).block();
-    }
-
     public <T, R> R patchWithBasicAuthSync(String url, T body, String username, String password, Class<R> responseType) {
         return patchWithBasicAuth(url, body, username, password, responseType).block();
-    }
-
-    public <T> T deleteWithBasicAuthSync(String url, Class<T> responseType) {
-        return deleteWithBasicAuth(url, responseType).block();
     }
 
     public <T> T deleteWithBasicAuthSync(String url, String username, String password, Class<T> responseType) {
@@ -288,64 +243,58 @@ public class HttpClientService {
     private <T, R> Mono<R> executePost(String url, T body, Map<String, String> headers, Class<R> responseType) {
         log.info("POST: {}", url);
 
-        var spec = webClient.post()
-                .uri(url)
-                .headers(h -> addHeaders(h, headers));
+        WebClient.RequestBodySpec spec = webClient.post().uri(url);
+        spec = spec.headers(h -> addHeaders(h, headers));
 
+        WebClient.RequestHeadersSpec<?> headerSpec;
         if (body != null) {
-            return spec.bodyValue(body)
-                    .retrieve()
-                    .bodyToMono(responseType)
-                    .timeout(Duration.ofMillis(timeout))
-                    .doOnError(error -> log.error("POST failed: {}", url, error));
+            headerSpec = spec.bodyValue(body);
         } else {
-            return spec.retrieve()
-                    .bodyToMono(responseType)
-                    .timeout(Duration.ofMillis(timeout))
-                    .doOnError(error -> log.error("POST failed: {}", url, error));
+            headerSpec = spec;
         }
+
+        return headerSpec.retrieve()
+                .bodyToMono(responseType)
+                .timeout(Duration.ofMillis(timeout))
+                .doOnError(error -> log.error("POST failed: {}", url, error));
     }
 
     private <T, R> Mono<R> executePut(String url, T body, Map<String, String> headers, Class<R> responseType) {
         log.info("PUT: {}", url);
 
-        var spec = webClient.put()
-                .uri(url)
-                .headers(h -> addHeaders(h, headers));
+        WebClient.RequestBodySpec spec = webClient.put().uri(url);
+        spec = spec.headers(h -> addHeaders(h, headers));
 
+        WebClient.RequestHeadersSpec<?> headerSpec;
         if (body != null) {
-            return spec.bodyValue(body)
-                    .retrieve()
-                    .bodyToMono(responseType)
-                    .timeout(Duration.ofMillis(timeout))
-                    .doOnError(error -> log.error("PUT failed: {}", url, error));
+            headerSpec = spec.bodyValue(body);
         } else {
-            return spec.retrieve()
-                    .bodyToMono(responseType)
-                    .timeout(Duration.ofMillis(timeout))
-                    .doOnError(error -> log.error("PUT failed: {}", url, error));
+            headerSpec = spec;
         }
+
+        return headerSpec.retrieve()
+                .bodyToMono(responseType)
+                .timeout(Duration.ofMillis(timeout))
+                .doOnError(error -> log.error("PUT failed: {}", url, error));
     }
 
     private <T, R> Mono<R> executePatch(String url, T body, Map<String, String> headers, Class<R> responseType) {
         log.info("PATCH: {}", url);
 
-        var spec = webClient.patch()
-                .uri(url)
-                .headers(h -> addHeaders(h, headers));
+        WebClient.RequestBodySpec spec = webClient.patch().uri(url);
+        spec = spec.headers(h -> addHeaders(h, headers));
 
+        WebClient.RequestHeadersSpec<?> headerSpec;
         if (body != null) {
-            return spec.bodyValue(body)
-                    .retrieve()
-                    .bodyToMono(responseType)
-                    .timeout(Duration.ofMillis(timeout))
-                    .doOnError(error -> log.error("PATCH failed: {}", url, error));
+            headerSpec = spec.bodyValue(body);
         } else {
-            return spec.retrieve()
-                    .bodyToMono(responseType)
-                    .timeout(Duration.ofMillis(timeout))
-                    .doOnError(error -> log.error("PATCH failed: {}", url, error));
+            headerSpec = spec;
         }
+
+        return headerSpec.retrieve()
+                .bodyToMono(responseType)
+                .timeout(Duration.ofMillis(timeout))
+                .doOnError(error -> log.error("PATCH failed: {}", url, error));
     }
 
     private <R> Mono<R> executeDelete(String url, Map<String, String> headers, Class<R> responseType) {
@@ -381,18 +330,13 @@ public class HttpClientService {
         return Map.of("Authorization", authHeader);
     }
 
-    /**
-     * Robust method to merge multiple header maps
-     * Handles any number of entries in each map
-     */
-    private Map<String, String> mergeHeaders(Map<String, String>... headerMaps) {
-        Map<String, String> merged = new HashMap<>();
-        for (Map<String, String> headers : headerMaps) {
-            if (headers != null) {
-                merged.putAll(headers);
-            }
-        }
-        return merged;
+    private Map<String, String> mergeHeaders(Map<String, String> headers1, Map<String, String> headers2) {
+        return Map.of(
+                headers1.entrySet().iterator().next().getKey(),
+                headers1.entrySet().iterator().next().getValue(),
+                headers2.entrySet().iterator().next().getKey(),
+                headers2.entrySet().iterator().next().getValue()
+        );
     }
 }
 
@@ -402,25 +346,71 @@ public class HttpClientService {
 
 /*
 @Service
-public class ExampleService {
-    
+public class EmailService {
+
     private final HttpClientService httpClient;
-    
-    public ExampleService(HttpClientService httpClient) {
+
+    @Value("${email.api.username}")
+    private String emailUsername;
+
+    @Value("${email.api.password}")
+    private String emailPassword;
+
+    public EmailService(HttpClientService httpClient) {
         this.httpClient = httpClient;
     }
-    
-    // Email API call
+
+    // Email API call with basic auth
     public EmailResponse sendEmail(EmailRequest request) {
         return httpClient.postWithBasicAuthSync(
             "https://email-api.com/send",
             request,
+            emailUsername,
+            emailPassword,
             EmailResponse.class
         );
     }
-    
-    // SMS with custom credentials
-    public SmsResponse sendSms(SmsRequest request, String apiKey, String secret) {
+
+    // Async email sending
+    public Mono<EmailResponse> sendEmailAsync(EmailRequest request) {
+        return httpClient.postWithBasicAuth(
+            "https://email-api.com/send",
+            request,
+            emailUsername,
+            emailPassword,
+            EmailResponse.class
+        );
+    }
+}
+
+@Service
+public class SmsService {
+
+    private final HttpClientService httpClient;
+
+    @Value("${sms.api.key}")
+    private String smsApiKey;
+
+    @Value("${sms.api.secret}")
+    private String smsApiSecret;
+
+    public SmsService(HttpClientService httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    // SMS with configured credentials
+    public SmsResponse sendSms(SmsRequest request) {
+        return httpClient.postWithBasicAuthSync(
+            "https://sms-api.com/send",
+            request,
+            smsApiKey,
+            smsApiSecret,
+            SmsResponse.class
+        );
+    }
+
+    // SMS with dynamic credentials (for multi-tenant scenarios)
+    public SmsResponse sendSmsWithCredentials(SmsRequest request, String apiKey, String secret) {
         return httpClient.postWithBasicAuthSync(
             "https://sms-api.com/send",
             request,
@@ -429,7 +419,17 @@ public class ExampleService {
             SmsResponse.class
         );
     }
-    
+}
+
+@Service
+public class PaymentService {
+
+    private final HttpClientService httpClient;
+
+    public PaymentService(HttpClientService httpClient) {
+        this.httpClient = httpClient;
+    }
+
     // Payment API with Bearer token
     public PaymentResponse processPayment(PaymentRequest request, String jwtToken) {
         return httpClient.postWithBearerSync(
@@ -439,13 +439,111 @@ public class ExampleService {
             PaymentResponse.class
         );
     }
-    
+
+    // Get payment status
+    public PaymentStatus getPaymentStatus(String paymentId, String jwtToken) {
+        return httpClient.getWithBearerSync(
+            "https://payment-api.com/status/" + paymentId,
+            jwtToken,
+            PaymentStatus.class
+        );
+    }
+
+    // Update payment with PUT
+    public PaymentResponse updatePayment(String paymentId, PaymentUpdateRequest request, String jwtToken) {
+        return httpClient.putWithBearerSync(
+            "https://payment-api.com/payments/" + paymentId,
+            request,
+            jwtToken,
+            PaymentResponse.class
+        );
+    }
+}
+
+@Service
+public class ExternalDataService {
+
+    private final HttpClientService httpClient;
+
+    @Value("${external.api.token}")
+    private String apiToken;
+
+    public ExternalDataService(HttpClientService httpClient) {
+        this.httpClient = httpClient;
+    }
+
     // Reactive external API call
-    public Mono<ExternalDataDto> fetchExternalDataAsync(String endpoint) {
+    public Mono<ExternalDataDto> fetchDataAsync(String endpoint) {
         return httpClient.getWithBearer(
-            "https://external-api.com/" + endpoint,
-            "bearer-token-here",
+            "https://external-api.com/v1/" + endpoint,
+            apiToken,
             ExternalDataDto.class
+        );
+    }
+
+    // Synchronous call with retry
+    public ExternalDataDto fetchDataWithRetry(String endpoint) {
+        Mono<ExternalDataDto> operation = httpClient.getWithBearer(
+            "https://external-api.com/v1/" + endpoint,
+            apiToken,
+            ExternalDataDto.class
+        );
+        return httpClient.withRetry(operation, 3).block();
+    }
+
+    // POST with custom headers
+    public CreateResponse createData(CreateRequest request) {
+        Map<String, String> headers = Map.of(
+            "Authorization", "Bearer " + apiToken,
+            "Content-Type", "application/json",
+            "X-API-Version", "v1",
+            "X-Client-ID", "my-app"
+        );
+
+        return httpClient.postSync(
+            "https://external-api.com/v1/create",
+            request,
+            headers,
+            CreateResponse.class
+        );
+    }
+}
+
+@Service
+public class GenericApiService {
+
+    private final HttpClientService httpClient;
+
+    public GenericApiService(HttpClientService httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    // Plain GET without authentication
+    public PublicDataDto getPublicData(String endpoint) {
+        return httpClient.getSync(
+            "https://public-api.com/" + endpoint,
+            PublicDataDto.class
+        );
+    }
+
+    // DELETE with custom timeout
+    public void deleteResource(String resourceId, String bearerToken) {
+        Mono<Void> operation = httpClient.deleteWithBearer(
+            "https://api.example.com/resources/" + resourceId,
+            bearerToken,
+            Void.class
+        );
+
+        httpClient.withCustomTimeout(operation, Duration.ofMinutes(2)).block();
+    }
+
+    // PATCH operation
+    public UpdateResponse partialUpdate(String resourceId, PatchRequest request, String bearerToken) {
+        return httpClient.patchWithBearerSync(
+            "https://api.example.com/resources/" + resourceId,
+            request,
+            bearerToken,
+            UpdateResponse.class
         );
     }
 }
