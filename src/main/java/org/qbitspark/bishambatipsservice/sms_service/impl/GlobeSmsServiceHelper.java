@@ -24,7 +24,6 @@ public class GlobeSmsServiceHelper {
     public void sendPlainTextSms(){
 
 
-
     }
 
 

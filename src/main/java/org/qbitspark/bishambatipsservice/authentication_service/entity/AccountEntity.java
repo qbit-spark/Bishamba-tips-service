@@ -38,7 +38,7 @@ public class AccountEntity {
     @JsonIgnore
     private String password;
 
-   // private String email;
+    private String email;
 
     private boolean locked = false;
 
