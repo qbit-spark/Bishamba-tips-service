@@ -28,7 +28,7 @@ public class BishambaTipsServiceApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         createRoleIfNotExists("ROLE_SUPER_ADMIN");
-        createRoleIfNotExists("ROLE_FARMER");
+        createRoleIfNotExists("ROLE_USER");
         createRoleIfNotExists("ROLE_AGENT");
     }
 

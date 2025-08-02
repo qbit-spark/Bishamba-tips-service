@@ -1,9 +1,7 @@
 package org.qbitspark.bishambatipsservice.authentication_service.service;
 
 import org.qbitspark.bishambatipsservice.authentication_service.entity.AccountEntity;
-import org.qbitspark.bishambatipsservice.authentication_service.payloads.AccountLoginRequest;
-import org.qbitspark.bishambatipsservice.authentication_service.payloads.CreateAccountRequest;
-import org.qbitspark.bishambatipsservice.authentication_service.payloads.RefreshTokenResponse;
+import org.qbitspark.bishambatipsservice.authentication_service.payloads.*;
 import org.qbitspark.bishambatipsservice.globeadvice.exceptions.*;
 
 import java.util.List;
@@ -19,6 +17,12 @@ public interface AccountService {
 
     List<AccountEntity> getAllAccounts();
 
-    AccountEntity getAccountByID(UUID uuid) throws ItemNotFoundException;
+    AccountEntity getAccountById(UUID accountId) throws ItemNotFoundException, RandomExceptions;
+
+    AccountEntity approveUser(UUID accountId) throws ItemNotFoundException;
+    AccountEntity assignRole(UUID accountId, UUID roleId) throws ItemNotFoundException;
+    AccountEntity updateUserDetails(UUID accountId, UpdateUserRequest request) throws ItemNotFoundException, RandomExceptions;
+
+    List<RoleResponse> getAllRoles();
 
 }

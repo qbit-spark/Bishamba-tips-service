@@ -20,6 +20,9 @@ public class AccountResponse {
     private String lastName;
     private String middleName;
     private String email;
+    private String phoneNumber;
+    private Boolean isApproved;
+    private String approvedBy;
     private Boolean isVerified;
     private Boolean isEmailVerified;
     private Boolean isPhoneVerified;

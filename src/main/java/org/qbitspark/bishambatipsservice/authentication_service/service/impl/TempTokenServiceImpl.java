@@ -364,6 +364,7 @@ public class TempTokenServiceImpl implements TempTokenService {
         // Mark the user as verified and set email as verified
         account.setIsVerified(true);
         account.setIsEmailVerified(true);
+        account.setIsPhoneVerified(true);
         account.setEditedAt(LocalDateTime.now());
 
         // Save the updated account

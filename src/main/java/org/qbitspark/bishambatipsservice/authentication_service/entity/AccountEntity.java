@@ -59,7 +59,9 @@ public class AccountEntity {
 
     private Boolean isPhoneVerified;
 
-    private Boolean isApproved;
+    private Boolean isApproved = false;
+
+    private String approvedBy;
 
     private String lockedReason;
 
