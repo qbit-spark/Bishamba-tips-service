@@ -40,4 +40,5 @@ public class CreateAccountRequest {
 
     @NotNull(message = "Verification channel is mandatory")
     private VerificationChannels verificationChannel;
+
 }

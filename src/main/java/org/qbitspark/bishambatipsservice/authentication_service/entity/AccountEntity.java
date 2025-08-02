@@ -59,6 +59,8 @@ public class AccountEntity {
 
     private Boolean isPhoneVerified;
 
+    private Boolean isApproved;
+
     private String lockedReason;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
