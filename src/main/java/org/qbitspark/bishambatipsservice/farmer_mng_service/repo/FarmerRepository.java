@@ -1,6 +1,6 @@
-package org.qbitspark.bishambatipsservice.FarmerMngService.repo;
+package org.qbitspark.bishambatipsservice.farmer_mng_service.repo;
 
-import org.qbitspark.bishambatipsservice.FarmerMngService.entities.FarmerEntity;
+import org.qbitspark.bishambatipsservice.farmer_mng_service.entities.FarmerEntity;
 import org.qbitspark.bishambatipsservice.authentication_service.entity.AccountEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 

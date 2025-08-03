@@ -1,6 +1,6 @@
-package org.qbitspark.bishambatipsservice.FarmerMngService.entities;
+package org.qbitspark.bishambatipsservice.farmer_mng_service.entities;
 
-import org.qbitspark.bishambatipsservice.FarmerMngService.utils.StringListConverter;
+import org.qbitspark.bishambatipsservice.farmer_mng_service.utils.StringListConverter;
 import org.qbitspark.bishambatipsservice.authentication_service.entity.AccountEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,9 +20,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "farmers_tb", indexes = {
-        @Index(name = "idx_phone_number", columnList = "phoneNumber"),
-        @Index(name = "idx_agent_id", columnList = "agent_id"),
-        @Index(name = "idx_region", columnList = "region")
+        @Index(name = "idx_farmer_phone_number", columnList = "phoneNumber"),
+        @Index(name = "idx_farmer_agent_id", columnList = "agent_id"),
+        @Index(name = "idx_farmer_region", columnList = "region")
 })
 public class FarmerEntity {
 
@@ -43,6 +43,14 @@ public class FarmerEntity {
 
     @Column(nullable = false)
     private String region;
+
+    private String termsAgreementCode;
+
+    private boolean termsAgreementAccepted = false;
+
+    private LocalDateTime termsAgreementAcceptedAt;
+
+    private LocalDateTime termsCodeExpiresAt;
 
     @Convert(converter = StringListConverter.class)
     @Column(columnDefinition = "jsonb")
@@ -73,4 +81,5 @@ public class FarmerEntity {
 
     @LastModifiedDate
     private LocalDateTime editedAt;
+
 }

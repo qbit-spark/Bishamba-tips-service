@@ -1,4 +1,4 @@
-package org.qbitspark.bishambatipsservice.FarmerMngService.payloads;
+package org.qbitspark.bishambatipsservice.farmer_mng_service.payloads;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

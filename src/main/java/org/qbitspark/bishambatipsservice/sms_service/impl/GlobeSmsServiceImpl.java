@@ -21,4 +21,13 @@ public class GlobeSmsServiceImpl implements GlobeSmsService {
 
 
     }
+
+    @Override
+    public void sendSimpleSms(String phoneNumber, String message) {
+        SmsResponse response = smsHelper.sendPlainTextSms(phoneNumber, message);
+
+        if (!response.isSuccessful()) {
+            throw new RuntimeException("SMS delivery failed - check SMS provider response");
+        }
+    }
 }

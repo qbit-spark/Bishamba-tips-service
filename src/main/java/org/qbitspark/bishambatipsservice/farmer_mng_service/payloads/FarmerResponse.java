@@ -1,4 +1,4 @@
-package org.qbitspark.bishambatipsservice.FarmerMngService.payloads;
+package org.qbitspark.bishambatipsservice.farmer_mng_service.payloads;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class FarmerResponse {
     private UUID id;
-    private String phoneNumber; // Will be masked for non-admins
+    private String phoneNumber;
     private String firstName;
     private String lastName;
     private String middleName;
@@ -23,6 +23,9 @@ public class FarmerResponse {
     private List<String> crops;
     private List<String> livestock;
     private Double farmSize;
+    private String termsAgreementCode;
+    private boolean termsAgreementAccepted;
+    private LocalDateTime termsAgreementAcceptedAt;
     private boolean isActive;
     private boolean hasRegistrationPaid;
     private LocalDateTime registrationPaidAt;

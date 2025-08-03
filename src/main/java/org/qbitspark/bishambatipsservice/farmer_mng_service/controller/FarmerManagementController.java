@@ -1,9 +1,10 @@
-package org.qbitspark.bishambatipsservice.FarmerMngService.controller;
+package org.qbitspark.bishambatipsservice.farmer_mng_service.controller;
 
-import org.qbitspark.bishambatipsservice.FarmerMngService.payloads.FarmerRegistrationRequest;
-import org.qbitspark.bishambatipsservice.FarmerMngService.payloads.FarmerRegistrationResponse;
-import org.qbitspark.bishambatipsservice.FarmerMngService.payloads.FarmerResponse;
-import org.qbitspark.bishambatipsservice.FarmerMngService.service.FarmerService;
+import org.qbitspark.bishambatipsservice.farmer_mng_service.payloads.ConfirmTermsRequest;
+import org.qbitspark.bishambatipsservice.farmer_mng_service.payloads.FarmerRegistrationRequest;
+import org.qbitspark.bishambatipsservice.farmer_mng_service.payloads.FarmerRegistrationResponse;
+import org.qbitspark.bishambatipsservice.farmer_mng_service.payloads.FarmerResponse;
+import org.qbitspark.bishambatipsservice.farmer_mng_service.service.FarmerService;
 import org.qbitspark.bishambatipsservice.globeadvice.exceptions.ItemNotFoundException;
 import org.qbitspark.bishambatipsservice.globeadvice.exceptions.RandomExceptions;
 import org.qbitspark.bishambatipsservice.globeresponsebody.GlobeSuccessResponseBuilder;
@@ -29,7 +30,7 @@ public class FarmerManagementController {
             @Valid @RequestBody FarmerRegistrationRequest request)
             throws RandomExceptions, ItemNotFoundException {
 
-        FarmerRegistrationResponse response = farmerService.registerFarmer(request);
+        FarmerRegistrationResponse response = farmerService.createFarmer(request);
 
         return ResponseEntity.ok(GlobeSuccessResponseBuilder.success(
                 "Farmer registered successfully",
@@ -75,4 +76,32 @@ public class FarmerManagementController {
                 farmers
         ));
     }
+
+    @PostMapping("/{farmerId}/resend-terms-code")
+    @PreAuthorize("hasRole('ROLE_AGENT') or hasRole('ROLE_SUPER_ADMIN')")
+    public ResponseEntity<GlobeSuccessResponseBuilder> resendTermsCode(
+            @PathVariable UUID farmerId)
+            throws RandomExceptions, ItemNotFoundException {
+        FarmerResponse farmer = farmerService.resendTermsCode(farmerId);
+        return ResponseEntity.ok(GlobeSuccessResponseBuilder.success(
+                "Terms code resent successfully",
+                farmer
+        ));
+    }
+
+
+    @PostMapping("/{farmerId}/confirm-terms")
+    @PreAuthorize("hasRole('ROLE_AGENT') or hasRole('ROLE_SUPER_ADMIN')")
+    public ResponseEntity<GlobeSuccessResponseBuilder> confirmTermsAgreement(
+            @PathVariable UUID farmerId,
+            @Valid @RequestBody ConfirmTermsRequest request)
+            throws RandomExceptions, ItemNotFoundException {
+        FarmerResponse farmer = farmerService.confirmTermsAgreement(farmerId, request);
+        return ResponseEntity.ok(GlobeSuccessResponseBuilder.success(
+                "Terms confirmed successfully",
+                farmer
+        ));
+    }
+
+
 }

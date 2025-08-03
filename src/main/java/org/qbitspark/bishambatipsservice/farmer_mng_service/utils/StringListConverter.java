@@ -1,4 +1,4 @@
-package org.qbitspark.bishambatipsservice.FarmerMngService.utils;
+package org.qbitspark.bishambatipsservice.farmer_mng_service.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

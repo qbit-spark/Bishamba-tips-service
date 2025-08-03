@@ -1,4 +1,4 @@
-package org.qbitspark.bishambatipsservice.FarmerMngService.enums;
+package org.qbitspark.bishambatipsservice.farmer_mng_service.enums;
 
 public enum FarmingType {
     CROPS_ONLY,

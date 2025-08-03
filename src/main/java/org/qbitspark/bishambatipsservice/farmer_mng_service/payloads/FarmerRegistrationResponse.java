@@ -1,4 +1,4 @@
-package org.qbitspark.bishambatipsservice.FarmerMngService.payloads;
+package org.qbitspark.bishambatipsservice.farmer_mng_service.payloads;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,4 +10,5 @@ public class FarmerRegistrationResponse {
     private String farmerName;
     private String phoneNumber;
     private String region;
+    private String message;
 }
