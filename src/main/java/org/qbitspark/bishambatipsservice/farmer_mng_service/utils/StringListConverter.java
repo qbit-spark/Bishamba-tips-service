@@ -21,12 +21,8 @@ public class StringListConverter implements AttributeConverter<List<String>, Str
 
     public StringListConverter() {
         this.objectMapper = new ObjectMapper();
-
-        // Configure for LocalDateTime support (if needed in future)
         this.objectMapper.registerModule(new JavaTimeModule());
         this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        // Ignore unknown properties for backward compatibility
         this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 

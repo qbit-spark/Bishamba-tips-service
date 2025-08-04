@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -52,12 +54,14 @@ public class FarmerEntity {
 
     private LocalDateTime termsCodeExpiresAt;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Convert(converter = StringListConverter.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "crops")
     private List<String> crops;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Convert(converter = StringListConverter.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "livestock")
     private List<String> livestock;
 
     private Double farmSize; // in acres

@@ -7,10 +7,11 @@ import lombok.Data;
 
 import java.util.UUID;
 
+
 @Data
 public class ConfirmTermsRequest {
 
     @NotBlank(message = "Terms agreement code is required")
-    @Pattern(regexp = "^[A-Z0-9]{6}$", message = "Terms agreement code must be 6 characters (letters and numbers)")
+    @Pattern(regexp = "^[A-Z0-9]{3}-[A-Z0-9]{3}$", message = "Terms agreement code must be in format XXX-XXX (3 characters, hyphen, 3 characters)")
     private String termsAgreementCode;
 }
