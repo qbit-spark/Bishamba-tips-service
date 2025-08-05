@@ -8,5 +8,4 @@ public interface PaymentProviderService {
     PaymentResult processPaymentViaProvider(PaymentRequest request, PaymentProvider provider);
     PaymentResult checkPaymentStatusViaProvider(String transactionRef, PaymentProvider provider);
     boolean isPaymentProviderAvailable(PaymentProvider provider);
-
 }
