@@ -5,8 +5,8 @@ import org.qbitspark.bishambatipsservice.payment_service.paylaod.PaymentRequest;
 import org.qbitspark.bishambatipsservice.payment_service.paylaod.PaymentResult;
 
 public interface PaymentProviderService {
-    PaymentResult processPayment(PaymentRequest request, PaymentProvider provider);
-    PaymentResult checkStatus(String transactionRef, PaymentProvider provider);
-    boolean isAvailable(PaymentProvider provider);
+    PaymentResult processPaymentViaProvider(PaymentRequest request, PaymentProvider provider);
+    PaymentResult checkPaymentStatusViaProvider(String transactionRef, PaymentProvider provider);
+    boolean isPaymentProviderAvailable(PaymentProvider provider);
 
 }

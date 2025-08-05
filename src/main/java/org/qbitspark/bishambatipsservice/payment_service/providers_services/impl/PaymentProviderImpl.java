@@ -20,7 +20,7 @@ public class PaymentProviderImpl implements PaymentProviderService {
     // private final BankPaymentProvider bankPaymentProvider;
 
     @Override
-    public PaymentResult processPayment(PaymentRequest request, PaymentProvider provider) {
+    public PaymentResult processPaymentViaProvider(PaymentRequest request, PaymentProvider provider) {
         log.info("Processing payment with provider: {} for transaction: {}",
                 provider, request.getTransactionRef());
 
@@ -56,7 +56,7 @@ public class PaymentProviderImpl implements PaymentProviderService {
     }
 
     @Override
-    public PaymentResult checkStatus(String transactionRef, PaymentProvider provider) {
+    public PaymentResult checkPaymentStatusViaProvider(String transactionRef, PaymentProvider provider) {
         log.info("Checking status with provider: {} for transaction: {}", provider, transactionRef);
 
         return switch (provider) {
@@ -82,7 +82,7 @@ public class PaymentProviderImpl implements PaymentProviderService {
     }
 
     @Override
-    public boolean isAvailable(PaymentProvider provider) {
+    public boolean isPaymentProviderAvailable(PaymentProvider provider) {
         return switch (provider) {
             case TEMBO -> temboPaymentProvider.isAvailable();
             case CASH -> true; // Not implemented yet
