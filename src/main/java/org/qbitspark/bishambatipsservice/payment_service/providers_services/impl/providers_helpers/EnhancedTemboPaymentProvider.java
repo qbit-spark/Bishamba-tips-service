@@ -1,13 +1,10 @@
-package org.qbitspark.bishambatipsservice.payment_service.providers_services.impl;
+package org.qbitspark.bishambatipsservice.payment_service.providers_services.impl.providers_helpers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.qbitspark.bishambatipsservice.globe_api_client.HttpClientService;
 import org.qbitspark.bishambatipsservice.payment_service.enums.PaymentDirection;
 import org.qbitspark.bishambatipsservice.payment_service.paylaod.*;
-import org.qbitspark.bishambatipsservice.payment_service.providers_services.PaymentProvider;
 import org.qbitspark.bishambatipsservice.payment_service.providers_services.paylaod.TemboCollectionResponse;
 import org.qbitspark.bishambatipsservice.payment_service.providers_services.paylaod.TemboPayoutResponse;
 import org.qbitspark.bishambatipsservice.payment_service.providers_services.paylaod.TemboStatusResponse;
@@ -16,8 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,7 +20,7 @@ import java.util.UUID;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class EnhancedTemboPaymentProvider implements PaymentProvider {
+public class EnhancedTemboPaymentProvider {
 
     @Value("${payment.tembo.base-url}")
     private String baseUrl;
@@ -46,7 +41,7 @@ public class EnhancedTemboPaymentProvider implements PaymentProvider {
 
     private final PaymentUtils paymentUtils;
 
-    @Override
+
     public PaymentResult processPayment(PaymentRequest request) {
         try {
             if (request.getDirection() == PaymentDirection.INBOUND) {
@@ -102,7 +97,7 @@ public class EnhancedTemboPaymentProvider implements PaymentProvider {
         }
     }
 
-    // Process B2C Payout - Clean DTO usage
+    // Process B2C Payout
     private PaymentResult processOutboundPayment(PaymentRequest request) {
         String formattedPhone = paymentUtils.formatPhoneNumber(request.getCustomerPhone());
         String serviceCode = paymentUtils.getTemboB2CServiceCode(formattedPhone);
@@ -146,7 +141,7 @@ public class EnhancedTemboPaymentProvider implements PaymentProvider {
         }
     }
 
-    @Override
+
     public PaymentResult checkStatus(String transactionRef) {
         try {
             // Create a clean request DTO instead of Map
@@ -218,7 +213,7 @@ public class EnhancedTemboPaymentProvider implements PaymentProvider {
         }
     }
 
-    @Override
+
     public boolean isAvailable() {
         return baseUrl != null && accountId != null && accountSecret != null;
     }
