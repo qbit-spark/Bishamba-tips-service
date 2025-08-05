@@ -34,7 +34,7 @@ public class EnhancedTemboPaymentProvider {
     @Value("${payment.tembo.callback-url}")
     private String callbackUrl;
 
-    @Value("${payment.tembo.bishamba-wallet")
+    @Value("${payment.tembo.bishamba-wallet}")
     private String disbursingWallet;
 
     private final HttpClientService httpClient;
