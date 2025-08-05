@@ -1,6 +1,4 @@
-package org.qbitspark.bishambatipsservice.payment_service.entity;// ===============================
-// BILLING ENTITY - RECURRING PAYMENTS
-// ===============================
+package org.qbitspark.bishambatipsservice.payment_service.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -147,11 +145,7 @@ public class BillingEntity {
     // SERVICE PROVIDER
     // ===============================
 
-    @Column(name = "agent_id")
-    private UUID agentId; // Agent providing the service
-
-    @Column(name = "service_provider_id")
-    private UUID serviceProviderId; // Service provider (could be different from agent)
+    private PaymentProvider paymentProvider;
 
     // ===============================
     // TIMESTAMPS
