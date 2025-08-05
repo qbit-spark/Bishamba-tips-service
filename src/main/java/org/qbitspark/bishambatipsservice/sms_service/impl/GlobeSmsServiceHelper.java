@@ -38,7 +38,7 @@ public class GlobeSmsServiceHelper {
 
             String endpoint = url+"text/single";
 
-            SmsResponse response = httpClientService.postWithBasicAuthSync(
+            SmsResponse response = httpClientService.postWithBasicAuth(
                     endpoint,
                     request,
                     username,
@@ -68,7 +68,7 @@ public class GlobeSmsServiceHelper {
             SmsRequest request = new SmsRequest(senderId, phoneNumber, message, reference);
             String endpoint = url+"text/single";
 
-            return httpClientService.postWithBasicAuthSync(
+            return httpClientService.postWithBasicAuth(
                     endpoint,
                     request,
                     username,
