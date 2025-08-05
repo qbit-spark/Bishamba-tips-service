@@ -88,12 +88,11 @@ public class EnhancedTemboPaymentProvider {
                         .withAdditionalData("channel", channel)
                         .withAdditionalData("temboResponse", response);
             } else {
-                return PaymentResult.failure("Tembo API error: " + response.getMessage());
+                throw new RuntimeException("Tembo API error: " + response.getMessage());
             }
 
         } catch (Exception e) {
-            log.error("Tembo API call failed", e);
-            return PaymentResult.failure("Tembo API call failed: " + e.getMessage());
+            throw new RuntimeException("Tembo API error", e);
         }
     }
 
