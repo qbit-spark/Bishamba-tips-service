@@ -41,7 +41,6 @@ public class EnhancedTemboPaymentProvider {
 
     private final PaymentUtils paymentUtils;
 
-
     public PaymentResult processPayment(PaymentRequest request) {
         try {
             if (request.getDirection() == PaymentDirection.INBOUND) {
